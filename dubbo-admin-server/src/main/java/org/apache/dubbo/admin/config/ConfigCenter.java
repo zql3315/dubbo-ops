@@ -60,8 +60,6 @@ public class ConfigCenter {
     @Value("${admin.config-center.password:}")
     private String password;
 
-    private static String globalConfigPath = "config/dubbo/dubbo.properties";
-
     private static final Logger logger = LoggerFactory.getLogger(ConfigCenter.class);
 
     private URL configCenterUrl;
@@ -82,7 +80,7 @@ public class ConfigCenter {
             dynamicConfiguration = ExtensionLoader.getExtensionLoader(GovernanceConfiguration.class).getExtension(configCenterUrl.getProtocol());
             dynamicConfiguration.setUrl(configCenterUrl);
             dynamicConfiguration.init();
-            String config = dynamicConfiguration.getConfig(globalConfigPath);
+            String config = dynamicConfiguration.getConfig(Constants.GLOBAL_CONFIG_PATH);
 
             if (StringUtils.isNotEmpty(config)) {
                 Arrays.stream(config.split("\n")).forEach( s -> {
@@ -101,9 +99,9 @@ public class ConfigCenter {
                 dynamicConfiguration = ExtensionLoader.getExtensionLoader(GovernanceConfiguration.class).getExtension(registryUrl.getProtocol());
                 dynamicConfiguration.setUrl(registryUrl);
                 dynamicConfiguration.init();
-                logger.warn("you are using dubbo.registry.address, which is not recommend, please refer to: https://github.com/apache/incubator-dubbo-ops/wiki/Dubbo-Admin-configuration");
+                logger.warn("you are using dubbo.registry.address, which is not recommend, please refer to: https://github.com/apache/incubator-dubbo-admin/wiki/Dubbo-Admin-configuration");
             } else {
-                throw new ConfigurationException("Either config center or registry address is needed, please refer to https://github.com/apache/incubator-dubbo-ops/wiki/Dubbo-Admin-configuration");
+                throw new ConfigurationException("Either config center or registry address is needed, please refer to https://github.com/apache/incubator-dubbo-admin/wiki/Dubbo-Admin-configuration");
                 //throw exception
             }
         }
@@ -119,7 +117,7 @@ public class ConfigCenter {
         Registry registry = null;
         if (registryUrl == null) {
             if (StringUtils.isBlank(registryAddress)) {
-                throw new ConfigurationException("Either config center or registry address is needed, please refer to https://github.com/apache/incubator-dubbo-ops/wiki/Dubbo-Admin-configuration");
+                throw new ConfigurationException("Either config center or registry address is needed, please refer to https://github.com/apache/incubator-dubbo-admin/wiki/Dubbo-Admin-configuration");
             }
             registryUrl = formUrl(registryAddress, group, username, password);
         }
@@ -145,7 +143,7 @@ public class ConfigCenter {
             metaDataCollector.setUrl(metadataUrl);
             metaDataCollector.init();
         } else {
-            logger.warn("you are using dubbo.registry.address, which is not recommend, please refer to: https://github.com/apache/incubator-dubbo-ops/wiki/Dubbo-Admin-configuration");
+            logger.warn("you are using dubbo.registry.address, which is not recommend, please refer to: https://github.com/apache/incubator-dubbo-admin/wiki/Dubbo-Admin-configuration");
         }
         return metaDataCollector;
     }
